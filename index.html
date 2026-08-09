@@ -89,6 +89,8 @@ if(location.hostname.endsWith('github.io')){
   .sec-head .ja{font-size:clamp(10px,2.8vw,13px);color:var(--muted);letter-spacing:.22em}
   /* 特別指定選手: 見出しの日本語が長いので字間を詰める。カードは1枚なので幅を抑える */
   .sec-head.special{flex-wrap:wrap;gap:4px 10px}
+  .sec-head.special .en{font-family:'Hiragino Kaku Gothic ProN','Noto Sans JP',sans-serif;
+    font-weight:800;font-size:clamp(21px,5.6vw,32px);letter-spacing:.02em}
   .sec-head.special .ja{letter-spacing:.06em;line-height:1.5}
   #sec-SPECIAL .grid{grid-template-columns:repeat(2,1fr)}
   @media(min-width:700px){#sec-SPECIAL .grid{grid-template-columns:repeat(4,1fr)}}
@@ -377,13 +379,13 @@ const DATA = {
   ]
 };
 const SEC_JA = {GK:"ゴールキーパー", DF:"ディフェンダー", MF:"ミッドフィールダー", FW:"フォワード",
-                SPECIAL:"2026/27シーズン JFA・Ｊリーグ特別指定選手", STAFF:"スタッフ"};
+                SPECIAL:"2026/27シーズン JFA・Ｊリーグ", STAFF:"スタッフ"};
 const app=document.getElementById("app");
 for(const [sec,players] of Object.entries(DATA)){
   const s=document.createElement("section");
   s.id="sec-"+sec;
   var isSp = sec==="SPECIAL";
-  s.innerHTML=`<div class="sec-head${isSp?" special":""}"><span class="en">${isSp?"SPECIAL":sec}</span><span class="ja">${SEC_JA[sec]}</span></div>`;
+  s.innerHTML=`<div class="sec-head${isSp?" special":""}"><span class="en">${isSp?"特別指定選手":sec}</span><span class="ja">${SEC_JA[sec]}</span></div>`;
   const g=document.createElement("div"); g.className="grid";
   for(const p of players){
     if(sec==="STAFF"){
