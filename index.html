@@ -87,6 +87,11 @@ if(location.hostname.endsWith('github.io')){
     font-size:clamp(30px,8vw,46px);color:var(--yellow);letter-spacing:.03em;
   }
   .sec-head .ja{font-size:clamp(10px,2.8vw,13px);color:var(--muted);letter-spacing:.22em}
+  /* 特別指定選手: 見出しの日本語が長いので字間を詰める。カードは1枚なので幅を抑える */
+  .sec-head.special{flex-wrap:wrap;gap:4px 10px}
+  .sec-head.special .ja{letter-spacing:.06em;line-height:1.5}
+  #sec-SPECIAL .grid{grid-template-columns:repeat(2,1fr)}
+  @media(min-width:700px){#sec-SPECIAL .grid{grid-template-columns:repeat(4,1fr)}}
   .grid{
     display:grid;
     grid-template-columns:repeat(2,1fr);           /* モバイル基準: 2列 */
@@ -344,6 +349,9 @@ const DATA = {
     {num:29, ja:"矢野 貴章", en:"YANO Kisho", dob:"1984年4月5日", hw:"187cm / 78kg", from:"静岡県", img:"players/29_yano-kisho.webp"},
     {num:80, ja:"オタボー ケネス", en:"OTABOR Kenneth", dob:"2002年5月13日", hw:"178cm / 67kg", from:"ナイジェリア", img:"players/80_otabor-kenneth.webp"}
   ],
+  SPECIAL: [
+    {num:2, ja:"櫻井 稜", en:"SAKURAI Ryo", pos:"DF", dob:"2005年2月16日", hw:"177cm / 70kg", from:"茨城県", career:"", img:"players/02_sakurai-ryo.webp"}
+  ],
   STAFF: [
     {num:null, ja:"米山 篤志", en:"YONEYAMA Atsushi", dob:"1976年11月20日", hw:"", from:"栃木県宇都宮市", img:"staff/staff_01_face.webp", role:"監督"},
     {num:null, ja:"濱崎 芳己", en:"HAMASAKI Yoshiki", dob:"1974年5月16日", hw:"", from:"静岡県", img:"staff/staff_02_face.webp", role:"ヘッドコーチ"},
@@ -361,12 +369,14 @@ const DATA = {
     {num:null, ja:"國嶋 璃玖", en:"KUNISHIMA Riku", dob:"2002年8月1日", hw:"", from:"栃木県高根沢町", img:"staff/staff_13_face.webp", role:"マネージャー"}
   ]
 };
-const SEC_JA = {GK:"ゴールキーパー", DF:"ディフェンダー", MF:"ミッドフィールダー", FW:"フォワード", STAFF:"スタッフ"};
+const SEC_JA = {GK:"ゴールキーパー", DF:"ディフェンダー", MF:"ミッドフィールダー", FW:"フォワード",
+                SPECIAL:"2026/27シーズン JFA・Ｊリーグ特別指定選手", STAFF:"スタッフ"};
 const app=document.getElementById("app");
 for(const [sec,players] of Object.entries(DATA)){
   const s=document.createElement("section");
   s.id="sec-"+sec;
-  s.innerHTML=`<div class="sec-head"><span class="en">${sec}</span><span class="ja">${SEC_JA[sec]}</span></div>`;
+  var isSp = sec==="SPECIAL";
+  s.innerHTML=`<div class="sec-head${isSp?" special":""}"><span class="en">${isSp?"SPECIAL":sec}</span><span class="ja">${SEC_JA[sec]}</span></div>`;
   const g=document.createElement("div"); g.className="grid";
   for(const p of players){
     if(sec==="STAFF"){
@@ -381,6 +391,29 @@ for(const [sec,players] of Object.entries(DATA)){
           <dl class="prof">
             ${p.dob?`<dt>生年月日</dt><dd>${p.dob}</dd>`:""}
             ${p.from?`<dt>出身</dt><dd>${p.from}</dd>`:""}
+          </dl>
+        </div>
+      </div>`);
+      continue;
+    }
+    if(isSp){
+      // 特別指定選手: 個人ページを作らないのでリンクにしない(矢印も出さない)。
+      // 行き先が無いぶん、プロフィールはこのカードに載せる
+      g.insertAdjacentHTML("beforeend",`
+      <div class="card">
+        <div class="shot">
+          <img src="${IMG}${p.img}" alt="${p.ja}" loading="lazy" width="800" height="800">
+          ${p.num!==null?`<span class="shirt-no">${p.num}</span>`:""}
+        </div>
+        <div class="band">${p.en}</div>
+        <div class="info">
+          <div class="pos-line">${p.pos||""}</div>
+          <div class="name-ja"><span class="kanji">${p.ja}</span></div>
+          <dl class="prof">
+            ${p.dob?`<dt>生年月日</dt><dd>${p.dob}</dd>`:""}
+            ${p.from?`<dt>出身</dt><dd>${p.from}</dd>`:""}
+            ${p.hw?`<dt>身長／体重</dt><dd>${p.hw}</dd>`:""}
+            ${p.career?`<dt>経歴</dt><dd>${p.career}</dd>`:""}
           </dl>
         </div>
       </div>`);
