@@ -195,6 +195,9 @@ if(location.hostname.endsWith('github.io')){
   .pn-tabs::-webkit-scrollbar{display:none}
   .pn-tabs button{position:relative;border:0;background:none;font-family:'Anton','Poppins',sans-serif;font-weight:400;
     font-size:clamp(15px,4vw,18px);color:#e8e8ea;padding:12px 6px;cursor:pointer;white-space:nowrap;letter-spacing:.04em}
+  /* 日本語のタブ(特別指定選手)。Antonは和文を持たないので本文書体で少し小さく */
+  .pn-tabs button.ja{font-family:'Hiragino Kaku Gothic ProN','Noto Sans JP',sans-serif;
+    font-weight:700;font-size:clamp(11px,3.1vw,13px);letter-spacing:.01em;padding-bottom:14px}
   .pn-tabs button.active{color:var(--yellow)}
   .pn-tabs button.active::after{content:'';position:absolute;left:4px;right:4px;bottom:5px;height:2px;background:var(--yellow)}
   .pn-right{display:flex;align-items:center;gap:8px;flex:0 0 auto;margin-left:10px}
@@ -210,6 +213,10 @@ if(location.hostname.endsWith('github.io')){
   }
   /* スマホでも「公式HP」の文字は消さない(アイコンだけだと何のボタンか伝わらないため) */
   @media(max-width:520px){.pn-official{padding:6px 9px;font-size:10.5px}.pn-tabs{gap:11px}}
+  /* 「特別指定選手」が増えた分、狭い端末では字間と余白を詰めて1行に収める */
+  @media(max-width:400px){.pn-tabs{gap:7px}
+    .pn-tabs button{padding-left:3px;padding-right:3px}
+    .pn-tabs button.ja{font-size:11px}}
   /* 選手カードのポジション(氏名の前の行・テキストのみ) */
   .info .pos-line{color:var(--yellow);font-family:'Poppins','Avenir Next',sans-serif;
     font-weight:700;font-size:11px;letter-spacing:.14em;line-height:1;margin-bottom:5px}
@@ -264,7 +271,7 @@ if(location.hostname.endsWith('github.io')){
 </header>
 <nav class="pnav" id="pnav"><div class="pnav-in">
   <div class="pn-tabs">
-    <button data-sec="sec-GK" onclick="go('sec-GK')">GK</button><button data-sec="sec-DF" onclick="go('sec-DF')">DF</button><button data-sec="sec-MF" onclick="go('sec-MF')">MF</button><button data-sec="sec-FW" onclick="go('sec-FW')">FW</button><button data-sec="sec-STAFF" onclick="go('sec-STAFF')">STAFF</button>
+    <button data-sec="sec-GK" onclick="go('sec-GK')">GK</button><button data-sec="sec-DF" onclick="go('sec-DF')">DF</button><button data-sec="sec-MF" onclick="go('sec-MF')">MF</button><button data-sec="sec-FW" onclick="go('sec-FW')">FW</button><button data-sec="sec-SPECIAL" class="ja" onclick="go('sec-SPECIAL')">特別指定選手</button><button data-sec="sec-STAFF" onclick="go('sec-STAFF')">STAFF</button>
   </div>
   <div class="pn-right">
     <a class="pn-official" href="https://www.tochigisc.jp/" rel="noopener">公式HP</a>
@@ -396,29 +403,6 @@ for(const [sec,players] of Object.entries(DATA)){
       </div>`);
       continue;
     }
-    if(isSp){
-      // 特別指定選手: 個人ページを作らないのでリンクにしない(矢印も出さない)。
-      // 行き先が無いぶん、プロフィールはこのカードに載せる
-      g.insertAdjacentHTML("beforeend",`
-      <div class="card">
-        <div class="shot">
-          <img src="${IMG}${p.img}" alt="${p.ja}" loading="lazy" width="800" height="800">
-          ${p.num!==null?`<span class="shirt-no">${p.num}</span>`:""}
-        </div>
-        <div class="band">${p.en}</div>
-        <div class="info">
-          <div class="pos-line">${p.pos||""}</div>
-          <div class="name-ja"><span class="kanji">${p.ja}</span></div>
-          <dl class="prof">
-            ${p.dob?`<dt>生年月日</dt><dd>${p.dob}</dd>`:""}
-            ${p.from?`<dt>出身</dt><dd>${p.from}</dd>`:""}
-            ${p.hw?`<dt>身長／体重</dt><dd>${p.hw}</dd>`:""}
-            ${p.career?`<dt>経歴</dt><dd>${p.career}</dd>`:""}
-          </dl>
-        </div>
-      </div>`);
-      continue;
-    }
     // 選手: 背番号は写真にCSSで重ねる。名前は日本語氏名。カード全体が個人ページへのリンク
     g.insertAdjacentHTML("beforeend",`
       <a class="card card-link" href="players/${p.num}.html">
@@ -428,7 +412,7 @@ for(const [sec,players] of Object.entries(DATA)){
         </div>
         <div class="band">${p.en}</div>
         <div class="info">
-          <div class="pos-line">${sec}</div>
+          <div class="pos-line">${isSp?(p.pos||""):sec}</div>
           <div class="name-ja"><span class="kanji">${p.ja}</span><span class="go">›</span></div>
           <dl class="prof">
             ${p.from?`<dt>出身</dt><dd>${p.from}</dd>`:""}
@@ -447,7 +431,7 @@ function go(id){var el=document.getElementById(id);if(!el)return;
   var ab=document.querySelector('.pnr-bar'),pn=document.getElementById('pnav');
   function setTop(){pn.style.top=(ab?ab.offsetHeight:0)+'px';}
   window.addEventListener('resize',setTop);setTop();
-  var ids=['sec-GK','sec-DF','sec-MF','sec-FW','sec-STAFF'];
+  var ids=['sec-GK','sec-DF','sec-MF','sec-FW','sec-SPECIAL','sec-STAFF'];
   function spy(){var off=(ab?ab.offsetHeight:0)+pn.offsetHeight+40,cur=null;
     for(var i=0;i<ids.length;i++){var el=document.getElementById(ids[i]);if(el&&el.getBoundingClientRect().top<=off)cur=ids[i];}
     document.querySelectorAll('.pn-tabs button').forEach(function(b){b.classList.toggle('active',b.dataset.sec===cur);});}
