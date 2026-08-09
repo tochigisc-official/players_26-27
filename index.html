@@ -379,13 +379,13 @@ const DATA = {
   ]
 };
 const SEC_JA = {GK:"ゴールキーパー", DF:"ディフェンダー", MF:"ミッドフィールダー", FW:"フォワード",
-                SPECIAL:"2026/27シーズン JFA・Ｊリーグ", STAFF:"スタッフ"};
+                SPECIAL:"", STAFF:"スタッフ"};
 const app=document.getElementById("app");
 for(const [sec,players] of Object.entries(DATA)){
   const s=document.createElement("section");
   s.id="sec-"+sec;
   var isSp = sec==="SPECIAL";
-  s.innerHTML=`<div class="sec-head${isSp?" special":""}"><span class="en">${isSp?"特別指定選手":sec}</span><span class="ja">${SEC_JA[sec]}</span></div>`;
+  s.innerHTML=`<div class="sec-head${isSp?" special":""}"><span class="en">${isSp?"特別指定選手":sec}</span>${SEC_JA[sec]?`<span class="ja">${SEC_JA[sec]}</span>`:""}</div>`;
   const g=document.createElement("div"); g.className="grid";
   for(const p of players){
     if(sec==="STAFF"){
