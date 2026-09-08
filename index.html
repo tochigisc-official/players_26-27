@@ -87,13 +87,11 @@ if(location.hostname.endsWith('github.io')){
     font-size:clamp(30px,8vw,46px);color:var(--yellow);letter-spacing:.03em;
   }
   .sec-head .ja{font-size:clamp(10px,2.8vw,13px);color:var(--muted);letter-spacing:.22em}
-  /* 特別指定選手: 見出しの日本語が長いので字間を詰める。カードは1枚なので幅を抑える */
+  /* 特別指定選手: 見出しは和文なので専用の書体で組む。カードの大きさは他セクションと共通 */
   .sec-head.special{flex-wrap:wrap;gap:4px 10px}
   .sec-head.special .en{font-family:'Hiragino Kaku Gothic ProN','Noto Sans JP',sans-serif;
     font-weight:800;font-size:clamp(21px,5.6vw,32px);letter-spacing:.02em}
   .sec-head.special .ja{letter-spacing:.06em;line-height:1.5}
-  #sec-SPECIAL .grid{grid-template-columns:repeat(2,1fr)}
-  @media(min-width:700px){#sec-SPECIAL .grid{grid-template-columns:repeat(4,1fr)}}
   .grid{
     display:grid;
     grid-template-columns:repeat(2,1fr);           /* モバイル基準: 2列 */
