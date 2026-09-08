@@ -223,6 +223,10 @@ if(location.hostname.endsWith('github.io')){
 
   /* ===== 背番号レイヤー(CSSで重ねる。見出しと同じAnton) ===== */
   .card .shot{position:relative;overflow:hidden;container-type:inline-size}
+  /* 写真がまだ無い選手。カードの大きさが崩れないよう、写真と同じ正方形の枠を置く */
+  .shot.noimg{aspect-ratio:1/1;display:flex;align-items:center;justify-content:center;
+    background:linear-gradient(160deg,#14171c,#0d1013);border-bottom:1px solid rgba(255,255,255,.06)}
+  .shot.noimg span{color:#6d7481;font-size:clamp(12px,3.2vw,14px);letter-spacing:.18em}
   .card .shot img{transform-origin:center center;transition:transform .5s cubic-bezier(.22,.68,.28,1)}
   @media(hover:hover) and (pointer:fine){.card:hover .shot img{transform:scale(1.07)}}
   @media(prefers-reduced-motion:reduce){.card .shot img{transition:none}.card:hover .shot img{transform:none}}
@@ -357,7 +361,8 @@ const DATA = {
     {num:80, ja:"オタボー ケネス", en:"OTABOR Kenneth", dob:"2002年5月13日", hw:"178cm / 67kg", from:"ナイジェリア", img:"players/80_otabor-kenneth.webp"}
   ],
   SPECIAL: [
-    {num:2, ja:"櫻井 稜", en:"SAKURAI Ryo", pos:"DF", dob:"2005年2月16日", hw:"177cm / 70kg", from:"茨城県", career:"", img:"players/02_sakurai-ryo.webp"}
+    {num:2, ja:"櫻井 稜", en:"SAKURAI Ryo", pos:"DF", dob:"2005年2月16日", hw:"177cm / 70kg", from:"茨城県", career:"", img:"players/02_sakurai-ryo.webp"},
+    {num:33, ja:"笹崎 翔矢", en:"SASAZAKI Shoya", pos:"GK", dob:"2004年8月2日", hw:"188cm / 80kg", from:"千葉県", career:"", img:""}
   ],
   STAFF: [
     {num:null, ja:"米山 篤志", en:"YONEYAMA Atsushi", dob:"1976年11月20日", hw:"", from:"栃木県宇都宮市", img:"staff/staff_01_face.webp", role:"監督"},
@@ -406,8 +411,8 @@ for(const [sec,players] of Object.entries(DATA)){
     // 選手: 背番号は写真にCSSで重ねる。名前は日本語氏名。カード全体が個人ページへのリンク
     g.insertAdjacentHTML("beforeend",`
       <a class="card card-link" href="players/${p.num}.html">
-        <div class="shot">
-          <img src="${IMG}${p.img}" alt="${p.ja}" loading="lazy" width="800" height="800">
+        <div class="shot${p.img?"":" noimg"}">
+          ${p.img?`<img src="${IMG}${p.img}" alt="${p.ja}" loading="lazy" width="800" height="800">`:`<span>準備中</span>`}
           ${p.num!==null?`<span class="shirt-no">${p.num}</span>`:""}
         </div>
         <div class="band">${p.en}</div>
